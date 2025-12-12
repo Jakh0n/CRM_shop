@@ -1,23 +1,21 @@
+import { useState } from 'react'
 import { ShoppingCart, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { useShop } from '../../context/ShopContext'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
+import OrderConfirmation from '../OrderConfirmation/OrderConfirmation'
 
 function CartBar() {
-	const { cart, removeFromCart, getTotalPrice, getTotalItems, clearCart } =
-		useShop()
+	const { cart, removeFromCart, getTotalPrice, getTotalItems } = useShop()
+	const [orderDialogOpen, setOrderDialogOpen] = useState(false)
 
 	const totalPrice = getTotalPrice()
 	const totalItems = getTotalItems()
 
 	const handleOrder = () => {
 		if (cart.length > 0) {
-			toast.success('Buyurtma berildi!', {
-				description: `Jami: ${totalPrice} so'm`,
-				duration: 3000,
-			})
-			clearCart()
+			setOrderDialogOpen(true)
 		}
 	}
 
@@ -113,6 +111,10 @@ function CartBar() {
 					</Button>
 				</div>
 			</div>
+			<OrderConfirmation
+				open={orderDialogOpen}
+				onOpenChange={setOrderDialogOpen}
+			/>
 		</div>
 	)
 }

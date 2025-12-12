@@ -1,7 +1,8 @@
 import { cn } from '@/lib/utils'
-import { X } from 'lucide-react'
+import { Package, X } from 'lucide-react'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useUser } from '@clerk/clerk-react'
 import { useCategories } from '../../hooks/useCategories'
 import { Button } from '../ui/button'
 import { Loading } from '../ui/loading'
@@ -10,6 +11,7 @@ function Sidebar({ isOpen, onClose }) {
 	const navigate = useNavigate()
 	const { categoryId: currentCategoryId } = useParams()
 	const { categories, loading } = useCategories()
+	const { user, isLoaded } = useUser()
 
 	const handleCategoryClick = useCallback(
 		categoryId => {
@@ -99,6 +101,22 @@ function Sidebar({ isOpen, onClose }) {
 						>
 							{categoryButtons}
 						</nav>
+						{/* Buyurtmalarim tugmasi */}
+						{isLoaded && user && (
+							<div className='mt-4 sm:mt-5 md:mt-6 pt-4 sm:pt-5 md:pt-6 border-t border-gray-200'>
+								<Button
+									onClick={() => {
+										navigate('/orders')
+										onClose()
+									}}
+									variant='outline'
+									className='w-full justify-start gap-2 sm:gap-2.5 h-9 sm:h-10 text-xs sm:text-sm'
+								>
+									<Package className='w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0' />
+									<span className='font-medium'>Buyurtmalarim</span>
+								</Button>
+							</div>
+						)}
 					</>
 				)}
 			</aside>

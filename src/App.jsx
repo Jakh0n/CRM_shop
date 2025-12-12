@@ -3,6 +3,7 @@ import ProtectedRoute from './components/Auth/ProtectedRoute'
 import SignInPage from './components/Auth/SignIn'
 import SignUpPage from './components/Auth/SignUp'
 import Layout from './components/Layout/Layout'
+import OrderHistory from './components/OrderHistory/OrderHistory'
 
 function App() {
 	return (
@@ -13,6 +14,14 @@ function App() {
 				element={
 					<ProtectedRoute>
 						<Layout />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path='orders'
+				element={
+					<ProtectedRoute>
+						<OrderHistory />
 					</ProtectedRoute>
 				}
 			/>

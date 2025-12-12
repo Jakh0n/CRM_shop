@@ -4,6 +4,7 @@ const ShopContext = createContext()
 
 const initialState = {
 	cart: [],
+	orders: JSON.parse(localStorage.getItem('orders') || '[]'),
 }
 
 function shopReducer(state, action) {
@@ -50,6 +51,15 @@ function shopReducer(state, action) {
 				cart: [],
 			}
 
+		case 'ADD_ORDER': {
+			const newOrders = [action.payload, ...state.orders]
+			localStorage.setItem('orders', JSON.stringify(newOrders))
+			return {
+				...state,
+				orders: newOrders,
+			}
+		}
+
 		default:
 			return state
 	}
@@ -92,6 +102,14 @@ export function ShopProvider({ children }) {
 		return state.cart.reduce((total, item) => total + item.quantity, 0)
 	}
 
+	const addOrder = order => {
+		dispatch({ type: 'ADD_ORDER', payload: order })
+	}
+
+	const getOrders = () => {
+		return state.orders
+	}
+
 	const value = {
 		...state,
 		addToCart,
@@ -100,6 +118,8 @@ export function ShopProvider({ children }) {
 		clearCart,
 		getTotalPrice,
 		getTotalItems,
+		addOrder,
+		getOrders,
 	}
 
 	return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>

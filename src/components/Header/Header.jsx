@@ -102,16 +102,25 @@ function Header({ onMenuClick }) {
 					</div>
 					<div className='flex items-center gap-3 flex-shrink-0'>
 						{isLoaded && user && (
-							<div className='text-right hidden lg:block'>
-								<p className='text-sm font-semibold text-gray-900 leading-tight'>
-									{getUserDisplayName()}
-								</p>
-								{user.primaryEmailAddress && (
-									<p className='text-xs text-gray-600 leading-tight'>
-										{user.primaryEmailAddress.emailAddress}
+							<>
+								<Button
+									variant='ghost'
+									onClick={() => navigate('/orders')}
+									className='hidden md:flex h-9 px-3 text-sm'
+								>
+									Buyurtmalarim
+								</Button>
+								<div className='text-right hidden lg:block'>
+									<p className='text-sm font-semibold text-gray-900 leading-tight'>
+										{getUserDisplayName()}
 									</p>
-								)}
-							</div>
+									{user.primaryEmailAddress && (
+										<p className='text-xs text-gray-600 leading-tight'>
+											{user.primaryEmailAddress.emailAddress}
+										</p>
+									)}
+								</div>
+							</>
 						)}
 						<div className='flex-shrink-0'>
 							{isLoaded && user ? (
