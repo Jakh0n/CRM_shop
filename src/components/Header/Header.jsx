@@ -1,11 +1,14 @@
+import { UserButton, useUser } from '@clerk/clerk-react'
 import { Menu, Search, User } from 'lucide-react'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 
 function Header({ onMenuClick }) {
 	const [searchParams, setSearchParams] = useSearchParams()
 	const searchQuery = searchParams.get('q') || ''
+	const { user, isLoaded } = useUser()
+	const navigate = useNavigate()
 
 	const handleSearchChange = e => {
 		const value = e.target.value
@@ -14,6 +17,17 @@ function Header({ onMenuClick }) {
 		} else {
 			setSearchParams({})
 		}
+	}
+
+	const getUserDisplayName = () => {
+		if (!isLoaded) return 'Yuklanmoqda...'
+		if (!user) return 'Foydalanuvchi'
+		return (
+			user.fullName ||
+			user.firstName ||
+			user.emailAddresses[0]?.emailAddress ||
+			'Foydalanuvchi'
+		)
 	}
 
 	return (
@@ -40,8 +54,26 @@ function Header({ onMenuClick }) {
 							className='w-full pl-10 pr-3 h-9 text-sm border-gray-300 focus:border-primary-500'
 						/>
 					</div>
-					<div className='w-9 h-9 rounded-full bg-primary-200 flex items-center justify-center flex-shrink-0 ml-2'>
-						<User className='w-5 h-5 text-primary-700' />
+					<div className='flex-shrink-0 ml-2'>
+						{isLoaded && user ? (
+							<UserButton
+								appearance={{
+									elements: {
+										avatarBox: 'w-9 h-9',
+									},
+								}}
+							/>
+						) : (
+							<Button
+								variant='ghost'
+								size='icon'
+								onClick={() => navigate('/sign-in')}
+								className='h-9 w-9 p-0'
+								aria-label='Kirish'
+							>
+								<User className='w-5 h-5 text-primary-700' />
+							</Button>
+						)}
 					</div>
 				</div>
 
@@ -69,14 +101,36 @@ function Header({ onMenuClick }) {
 						</div>
 					</div>
 					<div className='flex items-center gap-3 flex-shrink-0'>
-						<div className='text-right hidden lg:block'>
-							<p className='text-sm font-semibold text-gray-900 leading-tight'>
-								Анна Иванова
-							</p>
-							<p className='text-xs text-gray-600 leading-tight'>Бариста</p>
-						</div>
-						<div className='w-9 h-9 rounded-full bg-primary-200 flex items-center justify-center flex-shrink-0'>
-							<User className='w-5 h-5 text-primary-700' />
+						{isLoaded && user && (
+							<div className='text-right hidden lg:block'>
+								<p className='text-sm font-semibold text-gray-900 leading-tight'>
+									{getUserDisplayName()}
+								</p>
+								{user.primaryEmailAddress && (
+									<p className='text-xs text-gray-600 leading-tight'>
+										{user.primaryEmailAddress.emailAddress}
+									</p>
+								)}
+							</div>
+						)}
+						<div className='flex-shrink-0'>
+							{isLoaded && user ? (
+								<UserButton
+									appearance={{
+										elements: {
+											avatarBox: 'w-9 h-9',
+										},
+									}}
+								/>
+							) : (
+								<Button
+									variant='outline'
+									onClick={() => navigate('/sign-in')}
+									className='h-9 px-3 text-sm'
+								>
+									Kirish
+								</Button>
+							)}
 						</div>
 					</div>
 				</div>
